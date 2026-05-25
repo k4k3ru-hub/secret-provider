@@ -22,6 +22,13 @@ type Provider struct {
     aead       cipher.AEAD
 }
 
+
+//
+// Create provider.
+//
+// Version:
+//   - 2026-05-25: Added.
+//
 func NewProvider(config Config) (*Provider, error) {
     if err := config.Validate(); err != nil {
         return nil, fmt.Errorf("failed to create env aes gcm provider: %w", err)
@@ -54,13 +61,23 @@ func NewProvider(config Config) (*Provider, error) {
     }, nil
 }
 
+
+//
+// Get provider kind.
+//
+// Version:
+//   - 2026-05-25: Added.
+//
 func (p *Provider) ProviderKind() string {
-    if p == nil {
-        return ""
-    }
     return ProviderKind
 }
 
+//
+// Get key version.
+//
+// Version:
+//   - 2026-05-25: Added.
+//
 func (p *Provider) KeyVersion() string {
     if p == nil {
         return ""
@@ -68,6 +85,13 @@ func (p *Provider) KeyVersion() string {
     return p.keyVersion
 }
 
+
+//
+// Encrypt secret.
+//
+// Version:
+//   - 2026-05-25: Added.
+//
 func (p *Provider) Encrypt(ctx context.Context, plainText string) (string, error) {
     if p == nil {
         return "", fmt.Errorf("failed to encrypt secret: missing required parameter: provider=null")
@@ -99,7 +123,14 @@ func (p *Provider) Encrypt(ctx context.Context, plainText string) (string, error
     return base64.StdEncoding.EncodeToString(payload), nil
 }
 
-func (p *Provider) Decrypt(ctx context.Context, cipherText string, keyVersion string) (string, error) {
+
+//
+// Dencrypt secret.
+//
+// Version:
+//   - 2026-05-25: Added.
+//
+func (p *Provider) Decrypt(ctx context.Context, cipherText string) (string, error) {
     if p == nil {
         return "", fmt.Errorf("failed to decrypt secret: missing required parameter: provider=null")
     }
@@ -108,12 +139,6 @@ func (p *Provider) Decrypt(ctx context.Context, cipherText string, keyVersion st
     }
     if cipherText == "" {
         return "", fmt.Errorf("failed to decrypt secret: missing required parameter: cipher_text=%q", "empty")
-    }
-    if keyVersion == "" {
-        return "", fmt.Errorf("failed to decrypt secret: missing required parameter: key_version=%q", "empty")
-    }
-    if keyVersion != p.keyVersion {
-        return "", fmt.Errorf("failed to decrypt secret: unsupported key_version=%q", keyVersion)
     }
     if ctx == nil {
         ctx = context.Background()

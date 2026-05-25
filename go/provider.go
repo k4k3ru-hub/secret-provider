@@ -16,7 +16,7 @@ type Provider interface {
     ProviderKind() string
     KeyVersion() string
     Encrypt(ctx context.Context, plainText string) (string, error)
-    Decrypt(ctx context.Context, cipherText string, keyVersion string) (string, error)
+    Decrypt(ctx context.Context, cipherText string) (string, error)
 }
 
 
